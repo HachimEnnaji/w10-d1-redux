@@ -1,51 +1,42 @@
-import { Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { Star, StarFill } from "react-bootstrap-icons";
+import { Container, Row, Col, ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import { StarFill } from "react-bootstrap-icons";
 import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
-const Job = ({ data }) => {
+const Favourites = () => {
   const favourites = useSelector((state) => state.favourite.list);
   const dispatch = useDispatch();
 
-  const isFav = favourites.includes(data.company_name);
+  const navigate = useNavigate();
 
   return (
-    <Row className="mx-0 mt-3 p-3" style={{ border: "1px solid #00000033", borderRadius: 4 }}>
-      <Col xs={3}>
-        {isFav ? (
-          <StarFill
-            color="gold"
-            size={16}
-            className="mr-2 my-auto"
-            onClick={() =>
-              dispatch({
-                type: "REMOVE_FROM_FAVOURITE",
-                payload: data.company_name,
-              })
-            }
-          />
-        ) : (
-          <Star
-            color="gold"
-            size={16}
-            className="mr-2 my-auto"
-            onClick={() =>
-              dispatch({
-                type: "ADD_TO_FAVOURITE",
-                payload: data.company_name,
-              })
-            }
-          />
-        )}
-        <Link to={`/${data.company_name}`}>{data.company_name}</Link>
-      </Col>
-      <Col xs={9}>
-        <a href={data.url} target="_blank" rel="noreferrer">
-          {data.title}
-        </a>
-      </Col>
-    </Row>
+    <Container>
+      <Row>
+        <Col xs={10} className="mx-auto my-3">
+          <h1>Favourites</h1>
+          <Button onClick={() => navigate("/")}>Home</Button>
+        </Col>
+        <Col xs={10} className="mx-auto my-3">
+          <ListGroup>
+            {favourites.map((fav, i) => (
+              <ListGroupItem key={i}>
+                <StarFill
+                  className="mr-2"
+                  onClick={() =>
+                    dispatch({
+                      type: "REMOVE_FROM_FAVOURITE",
+                      payload: fav,
+                    })
+                  }
+                />
+                <Link to={"/" + fav}>{fav}</Link>
+              </ListGroupItem>
+            ))}
+          </ListGroup>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
-export default Job;
+export default Favourites;
